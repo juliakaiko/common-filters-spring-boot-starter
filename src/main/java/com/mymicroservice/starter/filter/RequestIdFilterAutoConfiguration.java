@@ -21,25 +21,31 @@ import org.springframework.core.env.Environment;
 )*/
 public class RequestIdFilterAutoConfiguration {
 
-    /*@Bean
-    @ConditionalOnMissingBean(name = "requestIdFilter")
-    public RequestIdFilter requestIdFilter(RequestIdFilterProperties properties) {
-        return new RequestIdFilter(properties);
-    }*/
-
-    @Bean
+    /**
+     * Фильтр для обычных сервисов (без Spring Security)
+     */
+   /* @Bean
     @ConditionalOnMissingBean
-    public FilterRegistrationBean<RequestIdFilter> requestIdFilter(
+    public FilterRegistrationBean<RequestIdFilter> requestIdFilterRegistration(
             RequestIdFilterProperties properties,
             Environment environment) {
 
-        String serviceName =
-                environment.getProperty("spring.application.name", "unknown-service");
+        String serviceName = environment.getProperty("spring.application.name", "unknown-service");
 
         FilterRegistrationBean<RequestIdFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new RequestIdFilter(properties, serviceName));
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
-
         return registration;
-    }
+    }*/
+
+    /**
+     * Фильтр для сервисов с Spring Security.
+     * Подключается в SecurityConfig через addFilterBefore
+     */
+   /* @Bean
+    @ConditionalOnMissingBean
+    public RequestIdFilter requestIdSecurityFilter(RequestIdFilterProperties properties, Environment environment) {
+        String serviceName = environment.getProperty("spring.application.name", "unknown-service");
+        return new RequestIdFilter(properties, serviceName);
+    }*/
 }

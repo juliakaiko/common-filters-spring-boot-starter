@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -14,11 +16,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class RequestIdFilter extends OncePerRequestFilter {
 
     private final RequestIdFilterProperties properties;
-    private final String serviceName;
+
+    @Value("${spring.application.name:unknown-service}")
+    private String serviceName;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

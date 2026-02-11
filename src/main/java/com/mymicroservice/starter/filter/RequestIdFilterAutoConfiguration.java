@@ -7,18 +7,23 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 
-@AutoConfiguration
+/*@AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties(RequestIdFilterProperties.class)
-/*@ConditionalOnProperty(
+@ConditionalOnProperty(
         prefix = "mymicroservice.filters.request-id",
         name = "enabled",
         havingValue = "true",
         matchIfMissing = true
 )*/
+
+@AutoConfiguration
+@EnableConfigurationProperties(RequestIdFilterProperties.class)
+@ComponentScan(basePackages = "com.mymicroservice.starter.filter")
 public class RequestIdFilterAutoConfiguration {
 
     /**

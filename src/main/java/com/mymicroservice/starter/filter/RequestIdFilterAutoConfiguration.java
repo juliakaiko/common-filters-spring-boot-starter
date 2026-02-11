@@ -23,7 +23,6 @@ import org.springframework.core.env.Environment;
 
 @AutoConfiguration
 @EnableConfigurationProperties(RequestIdFilterProperties.class)
-@ComponentScan(basePackages = "com.mymicroservice.starter.filter")
 public class RequestIdFilterAutoConfiguration {
 
     /**
@@ -47,10 +46,12 @@ public class RequestIdFilterAutoConfiguration {
      * Фильтр для сервисов с Spring Security.
      * Подключается в SecurityConfig через addFilterBefore
      */
-   /* @Bean
+    @Bean
     @ConditionalOnMissingBean
-    public RequestIdFilter requestIdSecurityFilter(RequestIdFilterProperties properties, Environment environment) {
+    public RequestIdFilter requestIdFilter(
+            RequestIdFilterProperties properties,
+            Environment environment) {
         String serviceName = environment.getProperty("spring.application.name", "unknown-service");
         return new RequestIdFilter(properties, serviceName);
-    }*/
+    }
 }

@@ -16,14 +16,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RequestIdFilter extends OncePerRequestFilter {
 
     private final RequestIdFilterProperties properties;
 
-    @Value("${spring.application.name:unknown-service}")
-    private String serviceName;
+    //@Value("${spring.application.name:unknown-service}")
+    private final String serviceName;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

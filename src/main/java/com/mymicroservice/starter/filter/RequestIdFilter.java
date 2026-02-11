@@ -33,6 +33,8 @@ public class RequestIdFilter extends OncePerRequestFilter {
         MDC.put(properties.getMdcKey(), requestId);
         MDC.put(properties.getServiceNameKey(), serviceName);
 
+        log.info("RequestIdFilter active: requestId={}, path={}", requestId, request.getRequestURI());
+
         // 3. Добавляем заголовок в ответ
         response.setHeader(properties.getHeaderName(), requestId);
 

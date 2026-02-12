@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -20,8 +18,6 @@ import java.util.UUID;
 public class RequestIdFilter extends OncePerRequestFilter {
 
     private final RequestIdFilterProperties properties;
-
-    //@Value("${spring.application.name:unknown-service}")
     private final String serviceName;
 
     @Override
@@ -29,20 +25,26 @@ public class RequestIdFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Получаем или генерируем requestId
+        /**
+         * Получаем или генерируем requestId
+         */
         String requestId = Optional.ofNullable(request.getHeader(properties.getHeaderName()))
                 .orElse(UUID.randomUUID().toString());
 
-        // 2. Устанавливаем значения в MDC
+        /**
+         * Устанавливаем значения в MDC
+         */
         MDC.put(properties.getMdcKey(), requestId);
         MDC.put(properties.getServiceNameKey(), serviceName);
 
-        log.info("RequestIdFilter active: requestId={}, path={}", requestId, request.getRequestURI());
-
-        // 3. Добавляем заголовок в ответ
+        /**
+         * Добавляем заголовок в ответ
+         */
         response.setHeader(properties.getHeaderName(), requestId);
 
-        // 4. Логируем входящий запрос (если включено)
+        /**
+         * Логируем входящий запрос (если включено)
+         */
         if (properties.isLogRequest()) {
             log.info(properties.getRequestLogFormat(),
                     request.getMethod(),
@@ -51,18 +53,23 @@ public class RequestIdFilter extends OncePerRequestFilter {
         }
 
         try {
-            // 5. Продолжаем цепочку фильтров
+            /**
+             * Продолжаем цепочку фильтров
+             */
             filterChain.doFilter(request, response);
         } finally {
-            // 6. Логируем ответ (если включено)
+            /**
+             * Логируем ответ (если включено)
+             */
             if (properties.isLogResponse()) {
                 log.info(properties.getResponseLogFormat(),
                         response.getStatus(),
                         serviceName,
                         requestId);
             }
-
-            // 7. Очищаем MDC
+            /**
+             * Очищаем MDC
+             */
             MDC.clear();
         }
     }

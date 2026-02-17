@@ -11,16 +11,16 @@ import org.springframework.core.env.Environment;
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties(RequestIdFilterProperties.class)
-@ConditionalOnProperty(
-        prefix = "mymicroservice.filters.request-id",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true
-)
 public class RequestIdFilterAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(
+            prefix = "mymicroservice.filters.request-id",
+            name = "enabled",
+            havingValue = "true",
+            matchIfMissing = true
+    )
     public RequestIdFilter requestIdFilter(
             RequestIdFilterProperties properties,
             Environment environment) {

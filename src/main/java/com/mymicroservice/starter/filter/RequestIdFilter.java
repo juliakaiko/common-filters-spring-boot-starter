@@ -30,7 +30,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
          */
         String requestId = Optional.ofNullable(request.getHeader(properties.getHeaderName()))
                 .orElse(UUID.randomUUID().toString());
-        
+
         log.debug("RequestIdFilter START for URI: {}", ((HttpServletRequest) request).getRequestURI());
 
         /**

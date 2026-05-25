@@ -15,12 +15,12 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit-тесты для {@link RequestIdFilter}.
+ * Unit-тесты для {@link TraceIdFilter}.
  *
  * <p>Проверяется:
  * <ul>
- *     <li>Генерация requestId при отсутствии заголовка</li>
- *     <li>Использование входящего requestId</li>
+ *     <li>Генерация traceId при отсутствии заголовка</li>
+ *     <li>Использование входящего traceId</li>
  *     <li>Заполнение MDC во время обработки запроса</li>
  *     <li>Очистка MDC после завершения запроса</li>
  *     <li>Корректная работа при отключённом логировании</li>
@@ -29,9 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <p>Тесты выполняются без поднятия Spring Context
  * и проверяют только бизнес-логику фильтра.
  */
-public class RequestIdFilterTest {
+public class TraceIdFilterTest {
 
-    private final RequestIdFilterProperties properties = new RequestIdFilterProperties();
+    private final TraceIdFilterProperties properties = new TraceIdFilterProperties();
     private final String serviceName = "test-service";
 
     /**
@@ -46,7 +46,7 @@ public class RequestIdFilterTest {
     }
 
     /**
-     * Проверяет, что при отсутствии заголовка requestId
+     * Проверяет, что при отсутствии заголовка traceId
      * фильтр генерирует новый идентификатор, добавляет его в response header
      * и очищает MDC после завершения обработки.
      *
@@ -54,8 +54,8 @@ public class RequestIdFilterTest {
      * @throws IOException если произошла ошибка ввода-вывода
      */
     @Test
-    void shouldGenerateRequestIdIfHeaderMissing() throws ServletException, IOException {
-        RequestIdFilter filter = new RequestIdFilter(properties, serviceName);
+    void shouldGenerateTraceIdIfHeaderMissing() throws ServletException, IOException {
+        TraceIdFilter filter = new TraceIdFilter(properties, serviceName);
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/test");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -70,7 +70,7 @@ public class RequestIdFilterTest {
     }
 
     /**
-     * Проверяет, что если входящий запрос содержит заголовок requestId,
+     * Проверяет, что если входящий запрос содержит заголовок traceId,
      * фильтр использует его без генерации нового значения
      * и пробрасывает его в response.
      *
@@ -78,8 +78,8 @@ public class RequestIdFilterTest {
      * @throws IOException если произошла ошибка ввода-вывода
      */
     @Test
-    void shouldUseExistingRequestIdFromHeader() throws ServletException, IOException {
-        RequestIdFilter filter = new RequestIdFilter(properties, serviceName);
+    void shouldUseExistingTraceIdFromHeader() throws ServletException, IOException {
+        TraceIdFilter filter = new TraceIdFilter(properties, serviceName);
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/test");
         request.addHeader(properties.getHeaderName(), "custom-id-123");
@@ -95,7 +95,7 @@ public class RequestIdFilterTest {
 
     /**
      * Проверяет, что во время обработки запроса
-     * фильтр помещает значения requestId и serviceName в MDC.
+     * фильтр помещает значения traceId и serviceName в MDC.
      *
      * <p>Проверка выполняется внутри {@link MockFilterChain},
      * что позволяет убедиться, что MDC заполнен именно
@@ -106,7 +106,7 @@ public class RequestIdFilterTest {
      */
     @Test
     void shouldPutValuesIntoMdcDuringRequest() throws ServletException, IOException {
-        RequestIdFilter filter = new RequestIdFilter(properties, serviceName);
+        TraceIdFilter filter = new TraceIdFilter(properties, serviceName);
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/test");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -126,7 +126,7 @@ public class RequestIdFilterTest {
      * Проверяет, что при отключённом логировании фильтр продолжает корректно работать:
      * <ul>
      *     <li>не выбрасывает исключений</li>
-     *     <li>добавляет requestId в response</li>
+     *     <li>добавляет traceId в response</li>
      * </ul>
      *
      * @throws ServletException если произошла ошибка фильтрации
@@ -137,7 +137,7 @@ public class RequestIdFilterTest {
         properties.setLogRequest(false);
         properties.setLogResponse(false);
 
-        RequestIdFilter filter = new RequestIdFilter(properties, serviceName);
+        TraceIdFilter filter = new TraceIdFilter(properties, serviceName);
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/test");
         MockHttpServletResponse response = new MockHttpServletResponse();

@@ -15,9 +15,9 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RequestIdFilter extends OncePerRequestFilter {
+public class TraceIdFilter extends OncePerRequestFilter {
 
-    private final RequestIdFilterProperties properties;
+    private final TraceIdFilterProperties properties;
     private final String serviceName;
 
     @Override
@@ -26,23 +26,23 @@ public class RequestIdFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         /**
-         * Получаем или генерируем requestId
+         * Получаем или генерируем traceId
          */
-        String requestId = Optional.ofNullable(request.getHeader(properties.getHeaderName()))
+        String traceId = Optional.ofNullable(request.getHeader(properties.getHeaderName()))
                 .orElse(UUID.randomUUID().toString());
 
-        log.debug("RequestIdFilter START for URI: {}", ((HttpServletRequest) request).getRequestURI());
+        log.debug("TraceIdFilter START for URI: {}", ((HttpServletRequest) request).getRequestURI());
 
         /**
          * Устанавливаем значения в MDC
          */
-        MDC.put(properties.getMdcKey(), requestId);
+        MDC.put(properties.getMdcKey(), traceId);
         MDC.put(properties.getServiceNameKey(), serviceName);
 
         /**
          * Добавляем заголовок в ответ
          */
-        response.setHeader(properties.getHeaderName(), requestId);
+        response.setHeader(properties.getHeaderName(), traceId);
 
         /**
          * Логируем входящий запрос (если включено)
@@ -67,7 +67,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
                 log.info(properties.getResponseLogFormat(),
                         response.getStatus(),
                         serviceName,
-                        requestId);
+                        traceId);
             }
             /**
              * Очищаем MDC

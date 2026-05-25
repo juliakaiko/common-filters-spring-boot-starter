@@ -1,6 +1,6 @@
 package com.mymicroservice.starter.filter.integration;
 
-import com.mymicroservice.starter.filter.RequestIdFilterAutoConfiguration;
+import com.mymicroservice.starter.filter.TraceIdFilterAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ImportAutoConfiguration(RequestIdFilterAutoConfiguration.class)
+@ImportAutoConfiguration(TraceIdFilterAutoConfiguration.class)
 class RequestIdFilterIntegrationTest {
 
     @Autowired
@@ -27,15 +27,15 @@ class RequestIdFilterIntegrationTest {
     void shouldAddRequestIdHeaderToResponse() throws Exception {
         mockMvc.perform(get("/hello"))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("X-Request-Id"));
+                .andExpect(header().exists("X-Trace-Id"));
     }
 
     @Test
     void shouldPropagateExistingRequestId() throws Exception {
         mockMvc.perform(get("/hello")
-                        .header("X-Request-Id", "integration-test-id"))
+                        .header("X-Trace-Id", "integration-test-id"))
                 .andExpect(status().isOk())
-                .andExpect(header().string("X-Request-Id", "integration-test-id"));
+                .andExpect(header().string("X-Trace-Id", "integration-test-id"));
     }
 
     @Configuration

@@ -4,18 +4,18 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "mymicroservice.filters.request-id")
-public class RequestIdFilterProperties {
+@ConfigurationProperties(prefix = "mymicroservice.filters.trace-id")
+public class TraceIdFilterProperties {
 
     /**
-     * Название заголовка для передачи requestId
+     * Название заголовка для передачи traceId
      */
-    private String headerName = "X-Request-Id";
+    private String headerName = "X-Trace-Id";
 
     /**
-     * Ключ для сохранения requestId в MDC
+     * Ключ для сохранения traceId в MDC
      */
-    private String mdcKey = "requestId";
+    private String mdcKey = "traceId";
 
     /**
      * Ключ для сохранения имени сервиса в MDC
@@ -40,5 +40,5 @@ public class RequestIdFilterProperties {
     /**
      * Формат лога ответа
      */
-    private String responseLogFormat = "Response status: {} - Service: {} - RequestId: {}";
+    private String responseLogFormat = "Response status: {} - Service: {} - TraceId: {}";
 }

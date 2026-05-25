@@ -10,21 +10,21 @@ import org.springframework.core.env.Environment;
 
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableConfigurationProperties(RequestIdFilterProperties.class)
-public class RequestIdFilterAutoConfiguration {
+@EnableConfigurationProperties(TraceIdFilterProperties.class)
+public class TraceIdFilterAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(
-            prefix = "mymicroservice.filters.request-id",
+            prefix = "mymicroservice.filters.trace-id",
             name = "enabled",
             havingValue = "true",
             matchIfMissing = true
     )
-    public RequestIdFilter requestIdFilter(
-            RequestIdFilterProperties properties,
+    public TraceIdFilter traceIdFilter(
+            TraceIdFilterProperties properties,
             Environment environment) {
         String serviceName = environment.getProperty("spring.application.name", "unknown-service");
-        return new RequestIdFilter(properties, serviceName);
+        return new TraceIdFilter(properties, serviceName);
     }
 }

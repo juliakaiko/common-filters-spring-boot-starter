@@ -1,1 +1,1 @@
-com.mymicroservice.starter.filter.RequestIdFilterAutoConfiguration
+com.mymicroservice.starter.filter.TraceIdFilterAutoConfiguration
